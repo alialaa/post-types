@@ -84,36 +84,34 @@ export const copy = () => {
 };
 
 export const scripts = () => {
-  return gulp
-    .src(paths.scrips.src)
-    .pipe(named())
-    .pipe(
-      webpack({
-        module: {
-          loaders: [
-            {
-              test: /\.js$/,
-              use: {
-                loader: "babel-loader",
-                options: {
-                  presets: ["babel-preset-env"]
-                }
-              }
-            }
-          ]
-        },
-        output: {
-          filename: "[name].js"
-        },
-        externals: {
-          jquery: "jQuery"
-        },
-        devtool: !PRODUCTION ? "inline-source-map" : false
-      })
-    )
-    .pipe(gulpif(PRODUCTION, uglify()))
-    .pipe(gulp.dest(paths.scrips.dest));
-};
+  return gulp.src(paths.scrips.src)
+      .pipe(named())
+      .pipe(webpack({
+          module: {
+              rules: [
+                  {
+                      test: /\.js$/,
+                      use: {
+                          loader: 'babel-loader',
+                          options: {
+                              presets: ["@babel/preset-env"]
+                          }
+                      }
+                  }
+              ]
+          },
+          output: {
+              filename: '[name].js'
+          },
+          externals: {
+              jquery: 'jQuery'
+          },
+          devtool: !PRODUCTION ? "inline-source-map" : false,
+          mode: PRODUCTION ? 'production' : 'development'
+      }))
+      .pipe(gulpif(PRODUCTION, uglify()))
+      .pipe(gulp.dest(paths.scrips.dest));
+}
 
 export const compress = () => {
   return gulp
